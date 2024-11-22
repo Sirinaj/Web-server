@@ -1,0 +1,142 @@
+<?php include 'banner.php'; ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #e7edf7;
+            margin: 50px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+            word-wrap: break-word;
+        }
+        th {
+            background-color: #d9cfde;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            border-radius: 4px;
+            background-color: #d9cfde;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+        a {
+            text-decoration: none;
+            color: black;
+        }
+        .btn {
+            margin-left: 25%;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+            border-radius: 4px;
+            background-color: #ffbf00;
+            border: none;
+            color: black;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .bar-container {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 5px;
+        }
+        .bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <?php
+        $servername = "localhost";
+        $username = "sirinaj-w";
+        $password = "RY@2Eyan";
+        $dbname = "sirinaj-w";
+
+        $conn = new mysqli($servername, $username, $password, $dbname);
+
+        if ($conn->connect_error) {
+            die("Connection failed: " . $conn->connect_error);
+        }
+
+        $conn->set_charset('utf8mb4');
+        $sql = "SELECT * FROM student";
+        $result = $conn->query($sql);
+    ?>
+    <h1>Student Table</h1>
+    
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Hometown</th>
+            <th>Pays per month</th>
+            <th>GPA</th>
+            <th>GPA Graph</th>
+        </tr>
+        <?php
+        if ($result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                $gpa = $row['gpa'];
+                $gpa_percentage = ($gpa / 4.00) * 100;
+        ?>
+            <tr>
+                <td><?php echo $row['stu_id']; ?></td>
+                <td><?php echo $row['stu_fname']; ?></td>
+                <td><?php echo $row['stu_lname']; ?></td>
+                <td><?php echo $row['stu_home']; ?></td>
+                <td><?php echo number_format($row['stu_pay'], 2); ?></td>
+                <td><a href="gpa.php?stu_id=<?php echo $row['stu_id']; ?>" style="text-decoration: underline;">GPA</a><?php echo "&nbsp;" . $row['gpa']; ?></td>
+                <td>
+                    <div class="bar-container">
+                        <div class="bar" style="width: <?php echo $gpa_percentage; ?>%;"></div>
+                    </div>
+                </td> 
+            </tr>
+        <?php
+            }
+        } else {
+            echo "<tr><td colspan='9'>0 results</td></tr>";
+        }
+        $conn->close();
+        ?>
+    </table>
+</body>
+</html>
